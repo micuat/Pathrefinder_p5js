@@ -29,11 +29,11 @@ class Dancer {
       this.curTrace = (this.curTrace + 4) % this.trace.length;
     }
     stroke(255, 0, 0);
-    beginShape(POINTS);
-    for (let v of this.trace) {
-      vertex(v.x, v.y);
-    }
-    endShape(CLOSE);
+    // beginShape(POINTS);
+    // for (let v of this.trace) {
+    //   vertex(v.x, v.y);
+    // }
+    // endShape(CLOSE);
 
     s.draw(color(255, 64), -1);
     s.draw(color(255, 255), 0);
@@ -48,8 +48,7 @@ class Dancer {
 
   randomState() {
     let s;
-    switch(floor(random(2))) {
-      //    switch(floor(random(4))) {
+    switch(floor(random(4))) {
     case 0:
       s = new PointState(this);
       break;

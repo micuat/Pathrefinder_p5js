@@ -26,13 +26,25 @@ class State {
     this.nextMorph();
   }
 
-  setupMorphs(_s) {};
+  setupMorphs(_s) { };
+
+  endSetupMorphs() {
+    if (this.morphs.length == 0) { // nothing to do
+      this.dancer.onStateEnd(this);
+      return;
+    }
+    this.itr = 0;
+    this.nextMorph();
+  }
+
   nextMorph() {
-    let m = this.morphs[this.itr++];
+    let m = this.morphs[this.itr];
     m.start();
   }
 
   onMorphEnd(m) {
+    this.itr += 1;
+    console.log(this.itr, this.morphs.length);
     if (this.itr < this.morphs.length) {
       this.nextMorph();
     } else {
@@ -43,23 +55,30 @@ class State {
   draw(c, tense) {
     push();
 
+    noFill();
+
     translate(this.tx.get(tense), this.ty.get(tense));
     rotate(this.r.get(tense));
 
     stroke(c);
-    strokeWeight(0.25);
-    this.drawRect(this.sx.get(tense), this.sy.get(tense), this.tri.get(tense), POINTS);
+    strokeWeight(2 / sc);
+    this.drawRect(this.sx.get(tense), this.sy.get(tense), this.tri.get(tense), QUADS);
 
     noFill();
-    strokeWeight(0.1);
-    this.drawRect(this.sx.get(tense), this.sy.get(tense), this.tri.get(tense), QUADS);
+    strokeWeight(2 / sc);
+    this.drawRect(this.sx.get(tense), this.sy.get(tense), this.tri.get(tense));
     fill(255);
 
     pop();
   }
 
   drawRect(x, y, tri, mode) {
-    beginShape(mode);
+    if(mode === undefined) {
+      beginShape();
+    }
+    else {
+      beginShape(mode);
+    }
     vertex(map(tri, 0, 1, x, 0), map(tri, 0, 1, y, 0));
     vertex(-x, y);
     vertex(-x, -y);
@@ -91,7 +110,7 @@ class PointState extends State {
       _tri = _s.tri.t;
     }
     let rEnd = 0;
-    if (_s == null){//} || _s.getClass().getName().equals("Pathrefinder$PointState")) {
+    if (_s == null) {//} || _s.getClass().getName().equals("Pathrefinder$PointState")) {
       this.r = new Morph(this, rEnd, rEnd);
     } else {
       this.r = new Morph(this, _r, rEnd);
@@ -102,12 +121,7 @@ class PointState extends State {
     this.sx = new Morph(this, _sx, 0);
     this.sy = new Morph(this, _sy, 0);
 
-    if (this.morphs.length == 0) { // nothing to do
-      this.dancer.onStateEnd(this);
-      return;
-    }
-    this.itr = 0;
-    this.nextMorph();
+    this.endSetupMorphs();
   }
 }
 
@@ -134,7 +148,7 @@ class LineState extends State {
       _tri = _s.tri.t;
     }
     let rEnd = 0.5 * PI * floor(random(0, 2));
-    if (_s == null){// || _s.getClass().getName().equals("Pathrefinder$PointState")) {
+    if (_s == null) {// || _s.getClass().getName().equals("Pathrefinder$PointState")) {
       this.r = new Morph(this, rEnd, rEnd);
     } else {
       this.r = new Morph(this, _r, rEnd);
@@ -145,97 +159,82 @@ class LineState extends State {
     this.sy = new Morph(this, _sy, 0);
     this.tri = new Morph(this, _tri, 0);
 
-    if (this.morphs.length == 0) { // nothing to do
-      this.dancer.onStateEnd(this);
-      return;
-    }
-    this.itr = 0;
-    this.nextMorph();
+    this.endSetupMorphs();
   }
 }
 
 class QuadState extends State {
-//   QuadState(Dancer _dancer) {
-//     super(_dancer);
-//   }
-//   void setupMorphs(State _s) {
-//     float _r, _tx, _ty, _sx, _sy, _tri;
-//     if (_s == null) {
-//       _r = 0;
-//       _tx = 0;
-//       _ty = 0;
-//       _sx = 0;
-//       _sy = 0;
-//       _tri = 0;
-//     } else {
-//       _r = _s.r.t;
-//       _tx = _s.tx.t;
-//       _ty = _s.ty.t;
-//       _sx = _s.sx.t;
-//       _sy = _s.sy.t;
-//       _tri = _s.tri.t;
-//     }
-//     float rEnd = 0.5 * PI * (int)floor(random(0, 2));
-//     if (_s == null || _s.getClass().getName().equals("Pathrefinder$PointState")) {
-//       r = new Morph(this, rEnd, rEnd);
-//     } else {
-//       r = new Morph(this, _r, rEnd);
-//     }
-//     tx = new Morph(this, _tx, (int)floor(random(-grid.nx, grid.nx)));
-//     ty = new Morph(this, _ty, (int)floor(random(-grid.ny, grid.ny)));
-//     sx = new Morph(this, _sx, (int)floor(random(1, grid.nx / 2)));
-//     sy = new Morph(this, _sy, (int)floor(random(1, grid.nx / 2)));
-//     tri = new Morph(this, _tri, 0);
+  constructor(_dancer) {
+    super(_dancer);
+  }
+  setupMorphs(_s) {
+    let _r, _tx, _ty, _sx, _sy, _tri;
+    if (_s == null) {
+      _r = 0;
+      _tx = 0;
+      _ty = 0;
+      _sx = 0;
+      _sy = 0;
+      _tri = 0;
+    } else {
+      _r = _s.r.t;
+      _tx = _s.tx.t;
+      _ty = _s.ty.t;
+      _sx = _s.sx.t;
+      _sy = _s.sy.t;
+      _tri = _s.tri.t;
+    }
+    let rEnd = 0.5 * PI * floor(random(0, 2));
+    if (_s == null){// || _s.getClass().getName().equals("Pathrefinder$PointState")) {
+      this.r = new Morph(this, rEnd, rEnd);
+    } else {
+      this.r = new Morph(this, _r, rEnd);
+    }
+    this.tx = new Morph(this, _tx, floor(random(-grid.nx, grid.nx)));
+    this.ty = new Morph(this, _ty, floor(random(-grid.ny, grid.ny)));
+    this.sx = new Morph(this, _sx, floor(random(1, grid.nx / 2)));
+    this.sy = new Morph(this, _sy, floor(random(1, grid.nx / 2)));
+    this.tri = new Morph(this, _tri, 0);
 
-//     if (morphs.size() == 0) { // nothing to do
-//       dancer.onStateEnd(this);
-//       return;
-//     }
-//     itr = morphs.iterator();
-//     nextMorph();
-//   }
+    this.endSetupMorphs();
+  }
 }
 
 class TriState extends State {
-//   TriState(Dancer _dancer) {
-//     super(_dancer);
-//   }
+  constructor(_dancer) {
+    super(_dancer);
+  }
 
-//   void setupMorphs(State _s) {
-//     float _r, _tx, _ty, _sx, _sy, _tri;
-//     if (_s == null) {
-//       _r = 0;
-//       _tx = 0;
-//       _ty = 0;
-//       _sx = 0;
-//       _sy = 0;
-//       _tri = 0;
-//     } else {
-//       _r = _s.r.t;
-//       _tx = _s.tx.t;
-//       _ty = _s.ty.t;
-//       _sx = _s.sx.t;
-//       _sy = _s.sy.t;
-//       _tri = _s.tri.t;
-//     }
-//     // allow 180, 270 as they are not symmetric
-//     float rEnd = 0.5 * PI * (int)floor(random(0, 4));
-//     if (_s == null || _s.getClass().getName().equals("Pathrefinder$PointState")) {
-//       r = new Morph(this, rEnd, rEnd);
-//     } else {
-//       r = new Morph(this, _r, rEnd);
-//     }
-//     tx = new Morph(this, _tx, (int)floor(random(-grid.nx, grid.nx)));
-//     ty = new Morph(this, _ty, (int)floor(random(-grid.ny, grid.ny)));
-//     sx = new Morph(this, _sx, (int)floor(random(1, grid.nx / 2)));
-//     sy = new Morph(this, _sy, (int)floor(random(1, grid.nx  / 2)));
-//     tri = new Morph(this, _tri, 1);
+  setupMorphs(_s) {
+    let _r, _tx, _ty, _sx, _sy, _tri;
+    if (_s == null) {
+      _r = 0;
+      _tx = 0;
+      _ty = 0;
+      _sx = 0;
+      _sy = 0;
+      _tri = 0;
+    } else {
+      _r = _s.r.t;
+      _tx = _s.tx.t;
+      _ty = _s.ty.t;
+      _sx = _s.sx.t;
+      _sy = _s.sy.t;
+      _tri = _s.tri.t;
+    }
+    // allow 180, 270 as they are not symmetric
+    let rEnd = 0.5 * PI * floor(random(0, 4));
+    if (_s == null){// || _s.getClass().getName().equals("Pathrefinder$PointState")) {
+      this.r = new Morph(this, rEnd, rEnd);
+    } else {
+      this.r = new Morph(this, _r, rEnd);
+    }
+    this.tx = new Morph(this, _tx, floor(random(-grid.nx, grid.nx)));
+    this.ty = new Morph(this, _ty, floor(random(-grid.ny, grid.ny)));
+    this.sx = new Morph(this, _sx, floor(random(1, grid.nx / 2)));
+    this.sy = new Morph(this, _sy, floor(random(1, grid.nx / 2)));
+    this.tri = new Morph(this, _tri, 1);
 
-//     if (morphs.size() == 0) { // nothing to do
-//       dancer.onStateEnd(this);
-//       return;
-//     }
-//     itr = morphs.iterator();
-//     nextMorph();
-//   }
+    this.endSetupMorphs();
+  }
 }
