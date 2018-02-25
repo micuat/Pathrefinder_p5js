@@ -28,15 +28,6 @@ class State {
 
   setupMorphs(_s) { };
 
-  endSetupMorphs() {
-    if (this.morphs.length == 0) { // nothing to do
-      this.dancer.onStateEnd(this);
-      return;
-    }
-    this.itr = 0;
-    this.nextMorph();
-  }
-
   nextMorph() {
     let m = this.morphs[this.itr];
     m.start();
@@ -44,7 +35,6 @@ class State {
 
   onMorphEnd(m) {
     this.itr += 1;
-    console.log(this.itr, this.morphs.length);
     if (this.itr < this.morphs.length) {
       this.nextMorph();
     } else {
@@ -120,8 +110,6 @@ class PointState extends State {
     this.ty = new Morph(this, _ty, floor(random(-grid.ny, grid.ny)));
     this.sx = new Morph(this, _sx, 0);
     this.sy = new Morph(this, _sy, 0);
-
-    this.endSetupMorphs();
   }
 }
 
@@ -158,8 +146,6 @@ class LineState extends State {
     this.sx = new Morph(this, _sx, floor(random(1, grid.nx / 2)));
     this.sy = new Morph(this, _sy, 0);
     this.tri = new Morph(this, _tri, 0);
-
-    this.endSetupMorphs();
   }
 }
 
@@ -195,8 +181,6 @@ class QuadState extends State {
     this.sx = new Morph(this, _sx, floor(random(1, grid.nx / 2)));
     this.sy = new Morph(this, _sy, floor(random(1, grid.nx / 2)));
     this.tri = new Morph(this, _tri, 0);
-
-    this.endSetupMorphs();
   }
 }
 
@@ -234,7 +218,5 @@ class TriState extends State {
     this.sx = new Morph(this, _sx, floor(random(1, grid.nx / 2)));
     this.sy = new Morph(this, _sy, floor(random(1, grid.nx / 2)));
     this.tri = new Morph(this, _tri, 1);
-
-    this.endSetupMorphs();
   }
 }

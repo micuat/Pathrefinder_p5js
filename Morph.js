@@ -17,6 +17,7 @@ class Morph {
   }
 
   start() {
+    console.log(this)
     this.t = this.tStart;
     if (this.tStart != this.tEnd)
       this.ani(this, 2, "t", this.tEnd, 0);
