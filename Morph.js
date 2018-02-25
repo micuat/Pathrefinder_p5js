@@ -32,8 +32,11 @@ class Morph {
     let startTime = millis();
     let endTime = startTime + duration * 1000;
     let interval = setInterval(function () {
-      self[param] = map(millis(), startTime, endTime, start, end);
+      let val = map(millis(), startTime, endTime, start, end);
+      self[param] = val;
       if (millis() >= endTime) {
+        self[param] = end;
+
         clearInterval(interval);
         self.onEnd();
       }
