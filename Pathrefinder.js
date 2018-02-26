@@ -2,11 +2,11 @@ var grid = new Grid(16, 10);
 var dancers = new Array(1);
 var isSetup = false;
 
-var retina = 2;
+var retina = window.devicePixelRatio;
 var sc = 90 / retina;
 
 function setup() {
-  createCanvas(1920/2, 1080/2);
+  createCanvas(windowWidth, windowHeight);
   noCursor();
   frameRate(30);
 }
