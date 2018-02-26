@@ -27,14 +27,21 @@ class Morph {
     }
   }
 
+  easeInOutQuart(t, b, c, d) {
+		if ((t/=d/2) < 1) return c/2*t*t*t*t + b;
+		return -c/2 * ((t-=2)*t*t*t - 2) + b;
+  }
+
   ani(self, duration, param, end, easing) {
     let start = self[param];
-    let startTime = millis();
-    let endTime = startTime + duration * 1000;
+    let startTime = millis() * 0.001;
+    let endTime = startTime + duration;
     let interval = setInterval(function () {
-      let val = map(millis(), startTime, endTime, start, end);
+      let curTime = millis() * 0.001;
+      let val = self.easeInOutQuart(curTime - startTime, start, end - start, duration);
+      //map(millis(), startTime, endTime, start, end);
       self[param] = val;
-      if (millis() >= endTime) {
+      if (curTime >= endTime) {
         self[param] = end;
 
         clearInterval(interval);
