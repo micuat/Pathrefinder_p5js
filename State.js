@@ -54,26 +54,28 @@ class State {
     strokeWeight(2 / sc);
     this.drawRect(this.sx.get(tense), this.sy.get(tense), this.tri.get(tense), QUADS);
 
-    noFill();
-    strokeWeight(2 / sc);
-    this.drawRect(this.sx.get(tense), this.sy.get(tense), this.tri.get(tense));
+    noStroke();
     fill(255);
+    this.drawRect(this.sx.get(tense), this.sy.get(tense), this.tri.get(tense));
 
     pop();
   }
 
   drawRect(x, y, tri, mode) {
     if(mode === undefined) {
-      beginShape();
+      ellipse(map(tri, 0, 1, x, 0), map(tri, 0, 1, y, 0), 0.1);
+      ellipse(-x, y, 0.1);
+      ellipse(-x, -y, 0.1);
+      ellipse(x, -y, 0.1);
     }
     else {
       beginShape(mode);
+      vertex(map(tri, 0, 1, x, 0), map(tri, 0, 1, y, 0));
+      vertex(-x, y);
+      vertex(-x, -y);
+      vertex(x, -y);
+      endShape(CLOSE);
     }
-    vertex(map(tri, 0, 1, x, 0), map(tri, 0, 1, y, 0));
-    vertex(-x, y);
-    vertex(-x, -y);
-    vertex(x, -y);
-    endShape(CLOSE);
   }
 }
 
