@@ -102,7 +102,7 @@ class PointState extends State {
       _tri = _s.tri.t;
     }
     let rEnd = 0;
-    if (_s == null) {//} || _s.getClass().getName().equals("Pathrefinder$PointState")) {
+    if (_s == null || _s.constructor.name == "PointState") {
       this.r = new Morph(this, rEnd, rEnd);
     } else {
       this.r = new Morph(this, _r, rEnd);
@@ -138,7 +138,7 @@ class LineState extends State {
       _tri = _s.tri.t;
     }
     let rEnd = 0.5 * PI * floor(random(0, 2));
-    if (_s == null) {// || _s.getClass().getName().equals("Pathrefinder$PointState")) {
+    if (_s == null || _s.constructor.name == "PointState") {
       this.r = new Morph(this, rEnd, rEnd);
     } else {
       this.r = new Morph(this, _r, rEnd);
@@ -173,7 +173,7 @@ class QuadState extends State {
       _tri = _s.tri.t;
     }
     let rEnd = 0.5 * PI * floor(random(0, 2));
-    if (_s == null){// || _s.getClass().getName().equals("Pathrefinder$PointState")) {
+    if (_s == null || _s.constructor.name == "PointState") {
       this.r = new Morph(this, rEnd, rEnd);
     } else {
       this.r = new Morph(this, _r, rEnd);
@@ -210,7 +210,7 @@ class TriState extends State {
     }
     // allow 180, 270 as they are not symmetric
     let rEnd = 0.5 * PI * floor(random(0, 4));
-    if (_s == null){// || _s.getClass().getName().equals("Pathrefinder$PointState")) {
+    if (_s == null || _s.constructor.name == "PointState") {
       this.r = new Morph(this, rEnd, rEnd);
     } else {
       this.r = new Morph(this, _r, rEnd);
